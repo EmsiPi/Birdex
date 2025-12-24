@@ -2,8 +2,8 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-conbvgst Bird = require('../modele/schema_bird');
-trbhgfyt
+const Bird = require('../modele/schema_bird');
+
 //const Bird = mongoose.model("Bird", birdSchema);
 //lire tous les oiseaux
 router.get("/", async (req, res) => {
@@ -15,7 +15,8 @@ router.post("/", async (req, res) => {
     try {
         const bird = new Bird({
             name: req.body.name,
-            location: req.body.location
+            location: req.body.location,
+            date: req.body.date
         });
 
         const savedBird = await bird.save();
@@ -25,6 +26,35 @@ router.post("/", async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
+
+router.delete("/:id", async (req, res) => {
+    const deleteBird = new Bird.findByIdAndDelete(req.params.id);
+
+    if (!deleteBird) {
+        return res.status(404).json({ error: "Oiseau non trouvé" });
+    }
+}
+)
+
+router.get("/ping", (req, res) => {
+    res.send("Bird route OK");
+});
+
+router.get("/:id", async (req, res) => {
+    try {
+        const bird = await Bird.findById(req.params.id);
+
+        if (!bird) {
+            return res.status(404).json({ error: "Oiseau non trouvé" });
+        }
+
+        res.status(200).json(bird);
+
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 
 
 module.exports = router;
