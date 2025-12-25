@@ -4,13 +4,13 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Bird = require('../modele/schema_bird');
 
-//const Bird = mongoose.model("Bird", birdSchema);
 //lire tous les oiseaux
 router.get("/", async (req, res) => {
     const birds = await Bird.find();
     res.json(birds);
 });
 
+//ajouter un oiseau
 router.post("/", async (req, res) => {
     try {
         const bird = new Bird({
@@ -27,21 +27,27 @@ router.post("/", async (req, res) => {
     }
 });
 
+//delete un oiseau trouvé par son Id
 router.delete("/:id", async (req, res) => {
-    const deleteBird = await Bird.findByIdAndDelete(req.params.id);
+    try {
+        const deletedBird = await Bird.findByIdAndDelete(req.params.id);
 
-    if (!deleteBird) {
-        return res.status(404).json({ error: "Oiseau non trouvé" });
+        if (!deletedBird) {
+            return res.status(404).json({ error: "Oiseau non trouvé" });
+        }
+
+        res.status(200).json({
+            message: "Oiseau supprimé",
+            bird: deletedBird
+        });
+
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
-
-    res.status(201).json(deleteBird);
 }
 )
 
-router.get("/ping", (req, res) => {
-    res.send("Bird route OK");
-});
-
+//montrer un oiseau trouvé par son Id
 router.get("/:id", async (req, res) => {
     try {
         const bird = await Bird.findById(req.params.id);
