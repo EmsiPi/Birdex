@@ -28,11 +28,13 @@ router.post("/", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-    const deleteBird = new Bird.findByIdAndDelete(req.params.id);
+    const deleteBird = await Bird.findByIdAndDelete(req.params.id);
 
     if (!deleteBird) {
         return res.status(404).json({ error: "Oiseau non trouvé" });
     }
+
+    res.status(201).json(deleteBird);
 }
 )
 
