@@ -63,19 +63,22 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-router.put("/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
     try {
-        const birdPut = await Bird.findById(req.params.id);
-        if (!birdPut) {
+
+        const updatedBird = await Bird.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+
+        if (!updatedBird) {
             return res.status(404).json({ error: "Oiseau non trouvé" });
         }
 
-        birdPut.name = req.body.name;
-        await birdPut.save();
         res.status(200).json({
-            message : "nom de l'oiseau modifié !",
-            bird : birdPut
-        })
+            message : "oiseau modifié !",
+            bird : updatedBird
+        });
         
     } catch (error) {
         res.status(400).json({ error: err.message });
