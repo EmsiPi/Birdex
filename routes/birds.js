@@ -63,6 +63,29 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+router.put("/name/:id", async (req, res) => {
+    try {
+        const birdPut = await Bird.findById(req.params.id);
+        if (!birdPut) {
+            return res.status(404).json({ error: "Oiseau non trouvé" });
+        }
+
+        birdPut.name = req.body.name;
+        await birdPut.save();
+        res.status(200).json({
+            message : "nom de l'oiseau modifié !",
+            bird : birdPut
+        })
+        
+    } catch (error) {
+        res.status(400).json({ error: err.message });
+    }
+}
+
+
+
+)
+
 
 
 module.exports = router;
