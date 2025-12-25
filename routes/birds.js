@@ -63,7 +63,7 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-router.put("/name/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
         const birdPut = await Bird.findById(req.params.id);
         if (!birdPut) {
